@@ -1,0 +1,81 @@
+---NodeJS Fundamentals------------------
+
+* Read-Evaluate-Print-Line & Hello.
+REPL = Read-Evaluate-Print-Line
+    Allows you playing around in JS.
+
+> .load jsfile.js
+> now you can call functions from jsfile.js
+
+---Hello Routing! | Handling GET Requests---
+
+http://localhost:3000/api/getinfo?prod=jeans&color=red
+
+Applying above link to this code yields.
+
+BasicRouter.js
+    'use strict';
+
+    const http = require('http');
+    const url = require('url');
+
+    function router(req, res) {
+        let baseURI = url.parse(req.url, true);
+        console.log('Request route: ', baseURI);
+        res.writeHead(200, {'Content-type': 'text/html'});
+        res.end('<h1>Hello Router</h1>');
+    }
+
+    http.createServer(router).listen(3000, () => console.log('Server running on port 3000.'));
+
+AllAboutNodejs$ node BasicRouter.js 
+Server running on port 3000.
+Request method:  Url {
+  protocol: null,
+  slashes: null,
+  auth: null,
+  host: null,
+  port: null,
+  hostname: null,
+  hash: null,
+  search: '?prod=jeans&color=red',
+  query: { prod: 'jeans', color: 'red' },
+  pathname: '/api/getinfo',
+  path: '/api/getinfo?prod=jeans&color=red',
+  href: '/api/getinfo?prod=jeans&color=red' }
+
+If you provide the same key with different values you get a useful array format.
+
+http://localhost:3000/api/getinfo?color=red&color=green
+
+Request method:  Url {
+  protocol: null,
+  slashes: null,
+  auth: null,
+  host: null,
+  port: null,
+  hostname: null,
+  hash: null,
+  search: '?color=red&color=green',
+  query: { color: [ 'red', 'green' ] }, <--- NICE ARRAY
+  pathname: '/api/getinfo',
+  path: '/api/getinfo?color=red&color=green',
+  href: '/api/getinfo?color=red&color=green' }
+
+Need a way to store routes and corresponding handler functions that they should run.
+Since req.method returns uppercase string dont forget to make the keys in routes uppercase.
+
+Here is snippets of incoming request console.log(req)
+
+    headers: 
+    { host: 'localhost:3000',
+        connection: 'keep-alive',
+        'cache-control': 'max-age=0',
+        'upgrade-insecure-requests': '1',
+        'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.76 Safari/537.36',
+        accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+        'accept-encoding': 'gzip, deflate, sdch, br',
+        'accept-language': 'en-US,en;q=0.8',
+        cookie: 'session=eyJwYXNzcG9ydCI6eyJ1c2VyIjoiNWEzNDQwNjJkMGY5NDcyNmQzNGRhOWVmIn19; session.sig=zSHg8azzv4PkglBGsfWsvblCnUs' },
+
+    method: 'GET'
