@@ -30,7 +30,7 @@ BasicRouter.js
 
 AllAboutNodejs$ node BasicRouter.js 
 Server running on port 3000.
-Request method:  Url {
+Request route:  Url {
   protocol: null,
   slashes: null,
   auth: null,
@@ -48,7 +48,7 @@ If you provide the same key with different values you get a useful array format.
 
 http://localhost:3000/api/getinfo?color=red&color=green
 
-Request method:  Url {
+Request route:  Url {
   protocol: null,
   slashes: null,
   auth: null,
@@ -79,3 +79,19 @@ Here is snippets of incoming request console.log(req)
         cookie: 'session=eyJwYXNzcG9ydCI6eyJ1c2VyIjoiNWEzNDQwNjJkMGY5NDcyNmQzNGRhOWVmIn19; session.sig=zSHg8azzv4PkglBGsfWsvblCnUs' },
 
     method: 'GET'
+
+---Hello Routing! | Handling POST Requests---
+
+In Postman under Body section x-wwww-form-urlencoded means that it simulates a login form that allows you to submit username and password to our server.
+It will format to come in like this
+
+    username=johndoe&password=mrrobot
+
+To upload a file(or image) in postman change from x-wwww-form-urlencoded to binary.
+All we have just completed in BasicRouter.js can also be done with Express.
+
+---Building a Web Server | Basic--- (Static Webserver)
+
+Serving static files
+
+---Promise me you'll never callback---
