@@ -86,7 +86,13 @@ class Enigma {
     }
 
     decode(str) {
-
+        const encodedString = str.split(".")[0];
+		const iv = Buffer.from(str.split(".")[1], 'base64');
+		const key = Buffer.from(this.key, 'binary');
+		const decipher = crypto.createDecipheriv("aes-256-ctr", key, iv);
+		let decodedText = decipher.update(encodedString, 'base64');
+		decodedText += decipher.final();
+		return decodedText;
     }
 }
 
