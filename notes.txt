@@ -95,3 +95,239 @@ All we have just completed in BasicRouter.js can also be done with Express.
 Serving static files
 
 ---Promise me you'll never callback---
+---Built a Web Server | Using Streams---
+
+The fs.readfile() reads and buffers up every file into memory(meaning everything) 
+before flushing it out in a response. There is no Flow Control to tell buffer to
+stop taking in more data due to something else choking CPU/memory! This is bad
+for concurrent users reading a file. 
+
+Solution:  Nodejs gives us streams!. Data is not read all at once. It is read in
+small chunks and piped out...this is Flow control!!. Because it's being read in 
+chunk-by-chunk it doesnt need to sit in memory and get's piped out.
+
+---Modules & NPM---
+
+qrgen$ npm init
+qrgen$ node qr.js "http://www.npmjs.com" "npmQRCode.png"
+
+You can then scan from your mobile phone.
+
+---Modules---
+
+Task:  A module that encrypts and descrypts text strings using the AES-256 
+encryption algorithm.
+
+encode("Don't panic") -> baef283275a0dbf19b480e3b
+decode("baef283275a0dbf19b480e3b") -> Dont' panic!
+
+module.exports can be used to export functions, objects, and even properties and 
+variables.
+
+---MongoDB 101------------------
+---Introduction to MongoDB---
+
+The Problem with RDMS.
+    - Data Storage & Processing is exponentially growing.
+    - Doesn't scale well in a modern Big Data environment.
+    - The Rigid Schema doesn't fit into a modern flexible dev environment.
+
+mongoDB is NoSchema based. In other words its Schema is flexible see pic.
+
+{upsert: true} will create the document you are trying to update if it does not exist.
+
+> show dbs
+TodoApp      0.000GB
+TodoAppTest  0.000GB
+admin        0.000GB
+local        0.000GB
+mean2        0.000GB
+mean3        0.000GB
+meanhotel    0.000GB
+meantest     0.000GB
+test         0.000GB
+> use mailingList
+switched to db mailingList
+> show collections
+> db.users.insert({"name": "John Doe", "email": "john@somemail.com"})
+WriteResult({ "nInserted" : 1 })
+> show collections
+users
+> db.users.insert({"name": "Ed Dillinger", "email": "ed@encom.com"})
+WriteResult({ "nInserted" : 1 })
+> db.users.find()
+{ "_id" : ObjectId("5a8c6a837792a1afa9326990"), "name" : "John Doe", "email" : "john@somemail.com" }
+{ "_id" : ObjectId("5a8c6ab27792a1afa9326991"), "name" : "Ed Dillinger", "email" : "ed@encom.com" }
+> db.users.find().pretty()
+{
+	"_id" : ObjectId("5a8c6a837792a1afa9326990"),
+	"name" : "John Doe",
+	"email" : "john@somemail.com"
+}
+{
+	"_id" : ObjectId("5a8c6ab27792a1afa9326991"),
+	"name" : "Ed Dillinger",
+	"email" : "ed@encom.com"
+}
+> db.users.insert({"name": "Kevin Flynn", "email": "kevin@encom.com", "phone": 9029283})
+WriteResult({ "nInserted" : 1 })
+> db.users.find().pretty()
+{
+	"_id" : ObjectId("5a8c6a837792a1afa9326990"),
+	"name" : "John Doe",
+	"email" : "john@somemail.com"
+}
+{
+	"_id" : ObjectId("5a8c6ab27792a1afa9326991"),
+	"name" : "Ed Dillinger",
+	"email" : "ed@encom.com"
+}
+{
+	"_id" : ObjectId("5a8c6b1d7792a1afa9326992"),
+	"name" : "Kevin Flynn",
+	"email" : "kevin@encom.com",
+	"phone" : 9029283
+}
+> db.users.update({"name": "John Doe"}, {$set: {"phone": 8782348342}}, {upsert: true})
+WriteResult({ "nMatched" : 1, "nUpserted" : 0, "nModified" : 1 })
+> db.users.find().pretty()
+{
+	"_id" : ObjectId("5a8c6a837792a1afa9326990"),
+	"name" : "John Doe",
+	"email" : "john@somemail.com",
+	"phone" : 8782348342
+}
+{
+	"_id" : ObjectId("5a8c6ab27792a1afa9326991"),
+	"name" : "Ed Dillinger",
+	"email" : "ed@encom.com"
+}
+{
+	"_id" : ObjectId("5a8c6b1d7792a1afa9326992"),
+	"name" : "Kevin Flynn",
+	"email" : "kevin@encom.com",
+	"phone" : 9029283
+}
+> db.users.update({"name": "Jairo Hernandez"}, {$set: {"phone": 2814376917}}, {upsert: true})
+WriteResult({
+	"nMatched" : 0,
+	"nUpserted" : 1,
+	"nModified" : 0,
+	"_id" : ObjectId("5a8c6cc3e5d97f13d3120462")
+})
+> db.users.find().pretty()
+{
+	"_id" : ObjectId("5a8c6a837792a1afa9326990"),
+	"name" : "John Doe",
+	"email" : "john@somemail.com",
+	"phone" : 8782348342
+}
+{
+	"_id" : ObjectId("5a8c6ab27792a1afa9326991"),
+	"name" : "Ed Dillinger",
+	"email" : "ed@encom.com"
+}
+{
+	"_id" : ObjectId("5a8c6b1d7792a1afa9326992"),
+	"name" : "Kevin Flynn",
+	"email" : "kevin@encom.com",
+	"phone" : 9029283
+}
+{
+	"_id" : ObjectId("5a8c6cc3e5d97f13d3120462"),
+	"name" : "Jairo Hernandez",
+	"phone" : 2814376917
+}
+> db.users.remove({"name": "Jairo Hernandez"})
+WriteResult({ "nRemoved" : 1 })
+> db.users.find().pretty()
+{
+	"_id" : ObjectId("5a8c6a837792a1afa9326990"),
+	"name" : "John Doe",
+	"email" : "john@somemail.com",
+	"phone" : 8782348342
+}
+{
+	"_id" : ObjectId("5a8c6ab27792a1afa9326991"),
+	"name" : "Ed Dillinger",
+	"email" : "ed@encom.com"
+}
+{
+	"_id" : ObjectId("5a8c6b1d7792a1afa9326992"),
+	"name" : "Kevin Flynn",
+	"email" : "kevin@encom.com",
+	"phone" : 9029283
+}
+> show dbs
+TodoApp      0.000GB
+TodoAppTest  0.000GB
+admin        0.000GB
+local        0.000GB
+mailingList  0.000GB
+mean2        0.000GB
+mean3        0.000GB
+meanhotel    0.000GB
+meantest     0.000GB
+test         0.000GB
+> show collections
+users
+> db.dropDatabase()
+{ "dropped" : "mailingList", "ok" : 1 }
+> show dbs
+TodoApp      0.000GB
+TodoAppTest  0.000GB
+admin        0.000GB
+local        0.000GB
+mean2        0.000GB
+mean3        0.000GB
+meanhotel    0.000GB
+meantest     0.000GB
+test         0.000GB
+> exit
+
+
+---NodeJS Frameworks------------------
+---What are frameworks?---
+
+Traits of a good framework:
+
+Routing.
+Sessions.
+View Rendering.
+Authentication.
+Database I/O
+Websockets(not a necessity in many apps or APIs.)
+    - By nature HTTP is stateless meaning once data is served to user the connection is severed
+    and does not persist.
+    - Traditional web chats required constant polling of the parties talking, which was inefficient
+    and slow. This is where websockets shines. It's like a phone call where you can talk freely
+    in both directions without having to reconnecting after every sentence. Real-time network apps.
+    Writing such a real-time app was a pain in PHP.
+Logging.
+    Can be written to console or 3rd party log server.
+
+---Express and the MEAN Stack---
+
+Express is best known for doing middleware.
+
+---Beyond the MEAN Stack---
+
+Hapi allows you to tie in multiple apps together. You can upgrade or modify one without affecting
+all the other apps(see diagram).
+
+Sails is one stack short of a full framework. You can choose whatever client side stack you want
+like Angular/REACT/Ember.
+
+Just remember that all NodeJS frameworks are client side agnostic meaning it allows freedom to use
+whatever u like.
+
+---ChatCAT - Creating a Realtime Multiroom Chat App & Deploying it on Heroku------------------
+---The Goal---
+
+- Build a production ready NodeJS app -- A Multiroom Realtime Chat Server.
+- Structuring a NodeJS app.
+- Using the Express framework.
+    - Implement routing.
+    - Implement custom middleware.
+    - Implement sessions.
+    - Implement logging.

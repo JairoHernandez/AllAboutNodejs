@@ -53,25 +53,20 @@ class Enigma {
         // crypto.pbkdf2Sync(password, salt, iterations, keylen, digest);
         // 10,000 This is the number of times, our function will iterate through 
         // to generate a secure and unique key. 
-        // const iv = crypto.pbkdf2Sync(this.key, crypto.randomBytes(16), 10000, 16, 'sha512');
         const iv = crypto.pbkdf2Sync(this.key, crypto.randomBytes(16), 10000, 16, 'sha512');
         
         // Create new buffer from the key and encode buffer as 'binary'.
-        // const key = Buffer.from(this.key, 'binary');
         const key = Buffer.from(this.key, 'binary');
 
         // Now create encryption cipher with IV and key. Creates an object.
-        // const cipher = crypto.createCipheriv("aes-256-ctr", key, iv);
         const cipher = crypto.createCipheriv("aes-256-ctr", key, iv);
 
         // Feed cipher object some data to encrypt.
-        // let encodedText = cipher.update(str, 'utf8', 'base64');
         let encodedText = cipher.update(str, 'utf8', 'base64');
 
         // Once we've updated our cipher object with the string to encode, we'll have to
         // return any remaining encrypted data and close the cipher. This is done by 
         // calling the cipher.final() method as shown below:
-        // encodedText += cipher.final();
         encodedText += cipher.final();
 
         // Since the Initiazliation Vector(IV) is needed for decrypting the text, we'll
