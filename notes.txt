@@ -331,3 +331,48 @@ whatever u like.
     - Implement custom middleware.
     - Implement sessions.
     - Implement logging.
+- Use MongoDB-as-a-service through MongoLab.com.
+- Use websockets using Socket.io.
+- Implement Social Authentication using Facebook & Twitter.
+- Deploy on cloud to Heroku.
+- Use ES6 features.
+
+---Structuring the App---
+
+Express is not an opinionated framework, which means it does not force a strict application 
+architecture on you.
+
+---Installing nodemon---
+
+$ npm install -g nodemon
+
+---npm init and here we go---
+
+$ npm  init
+package name: (chatcat) <-- Cannot use uppercase or spaces.
+keywords: <-- Makes package searchable on public repository.
+license: (ISC) <-- Can be MIT, GNU, Apache, GPL.
+
+Since we are not building a reusable module remove this line.
+
+package.json
+    "main": "index.js",
+
+otherwise you will get this error.
+
+    jairomh@ubuntu64-DevOps:~/WORK/AllAboutNodejs/chatcat$ nodemon
+    [nodemon] 1.11.0
+    [nodemon] to restart at any time, enter `rs`
+    [nodemon] watching: *.*
+    [nodemon] starting `node index.js`
+    module.js:341
+        throw err;
+        ^
+
+    Error: Cannot find module '/home/jairomh/WORK/AllAboutNodejs/chatcat/index.js'
+        at Function.Module._resolveFilename (module.js:339:15)
+        at Function.Module._load (module.js:290:25)
+        at Function.Module.runMain (module.js:447:10)
+        at startup (node.js:139:18)
+        at node.js:999:3
+    [nodemon] app crashed - waiting for file changes before starting...
