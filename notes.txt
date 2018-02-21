@@ -376,3 +376,9 @@ otherwise you will get this error.
         at startup (node.js:139:18)
         at node.js:999:3
     [nodemon] app crashed - waiting for file changes before starting...
+
+---The View Renderer--
+
+EJS templating is preferable over Jade due to Jade's learning curve.
+
+    name: 'John Doe' + <p><%= name %></p> = <p>John Doe</p>
