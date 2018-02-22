@@ -382,3 +382,23 @@ otherwise you will get this error.
 EJS templating is preferable over Jade due to Jade's learning curve.
 
     name: 'John Doe' + <p><%= name %></p> = <p>John Doe</p>
+
+chatcat$ npm install ejs@2.3.4 4 --save --save-exact
+
+---Serving Static Assets---
+
+Easily using middleware using app.use(express.static('public')).
+Remove the . from src and href links.
+
+---Express Router First Steps---
+
+Express router is its own instance and a middleware.
+
+app/index.js
+    // router.get('/info', (req, res, next) => {
+    //     res.send('Test page'); // Sends text to browser.
+    // });
+
+---Express Router: The routes object---
+
+One can do more then one HTTP method(GET, POST, etc.) for a single route(see digram).
