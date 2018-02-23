@@ -402,3 +402,21 @@ app/index.js
 ---Express Router: The routes object---
 
 One can do more then one HTTP method(GET, POST, etc.) for a single route(see digram).
+
+---Do we need a database? Yes we do!
+
+Since HTTP is stateless sessions fills in the gap of persistence.
+
+---MongoDB as a service | MongoLab.com---
+
+mongodb://<dbuser>:<dbpassword>@ds147668.mlab.com:47668/chatcatjairodb
+
+DB username: chatcatuser
+Database passwd: password
+
+---Accessing the Database---
+
+Mongoose is an Object Data Mapper or ODM.
+Makes it easy for nodeapp to talk to mongodb.
+Mongoose brings in structure to a schemaless Mongodb world.
+mongoosejs.com
