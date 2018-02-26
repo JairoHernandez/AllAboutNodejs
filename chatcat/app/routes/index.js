@@ -14,6 +14,14 @@ module.exports = () => {
             },
             '/chat': (req, res, next) => {
                 res.render('chatroom');
+            },
+            '/getsession': (req, res, next) => {
+                console.log(req.session);
+                res.send(`My favorite color: ${req.session.favColor}`); // ES6 notation is how I got this to work.
+            },
+            '/setsession': (req, res, next) => {
+                req.session.favColor = "Red";
+                res.send("Session Set");
             }
         },
         post: {

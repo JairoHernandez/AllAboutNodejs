@@ -20,6 +20,7 @@ app.use('/dashboard', helloMiddleware); // Using '/' is optional because that me
                                // If you use '/dashboard' then this onlwy works for that route onwards and '/' will console.log undefined. **/
 
 
+app.use(chatCat.session); // Session code must appear before mounting router otherwise you wont be able to use sessions functionality.
 app.use('/', chatCat.router);
 
 app.listen(app.get('port'), () => console.log('Chatcat running on port: ', app.get('port')));
