@@ -420,3 +420,132 @@ Mongoose is an Object Data Mapper or ODM.
 Makes it easy for nodeapp to talk to mongodb.
 Mongoose brings in structure to a schemaless Mongodb world.
 mongoosejs.com
+
+---Sessions 101---
+
+HTTP is stateless meaning every request is unique!
+Sessions are data persistence. Different ways to build a sesion.
+    - Request Parameters: Stored in DB on server and flagged to expire after specified time for security.
+        /store/cat01/?user=sessionid002
+    - Hidden Form Fields:  If you are making a POST request thru a form a hidden form field can be prepopulated with the unique session ID of the user
+      who's logged in so that the next page or route of where the form is going to POST to knows who submitted the page.
+    - Browser Cookie:  Session ID is stored in the user's browser as a session cookie. A cookie is a piece of data usually no bigger than 4KB that 
+      a website can store in a user's browser and retrieve as necessary. In the case of a session cookie this data is usually stored in memory, 
+      which means that if the user closes the browser window this data is purged and causes the session to expire since our code on the server wont 
+      be abel to fetch the same session ID when the user reopens the browser and visits the secure route. This method is what Express uses.
+
+    All these methods have advantages/disadvantages and not all are full proof.
+    Other techniques like encrypting session ID can provide more security.
+
+---Implementing sessions using the express-session middleware---
+
+Express does NOT come with a built-in sessions manager.
+You have to download module.
+
+chatcat$ npm install express-session@1.12.1 --save --save-exact
+
+Session data will be stored on our mongolab mongoDB.
+Associated session ID to be stored in browser's cookie.
+
+To have express-session module talk to mongoDB one needs connect-mongo. 
+It is written in ES6 with a fallback in case you are using an older version of node.
+
+chatcat$ npm install connect-mongo@1.1.0 --save --save-exact
+
+Ensure we are the ones who originally created cookie and that data has not been tampered with.
+to prevent a hacker from high-jacking a session cookie to gain access to secure routes in your app.
+Use signed session cookies that have been encrypted using a hash or secret key, which only we
+know as the owner of the app.
+
+Session code written to app/session/index.js.
+Add sessionSecret key to development.json and index.js.
+
+app/config/development.json
+    sessionSecret": "catscanfly"
+
+app/config/index.js
+    if (process.env.NODE_ENV === 'production') {
+        // Offer production stage environment variables.
+        module.exports = {
+            host: process.env.host || "",
+            dbURI: process.env.dbURI,
+            sessionSecret: process.env.sessionSecret <---
+
+The express-session is like any other middleware that plugs into the request and response.
+
+---Social Authentication: Introduction to Passport---
+
+facebook uses OAuth 2.0.
+twitter uses older standard OAuth 1.0a.
+
+---Social Authentication: Installing Passport & Strategies---
+
+You can go passoprtjs.org to find comprehensive list of passport strategies.
+
+chatcat$ npm install passport-facebook@2.0.0 --save --save-exact
+chatcat$ npm install passport-twitter@1.0.3 --save --save-exact
+
+---Social Authentication : Registering the app on Facebook---
+
+Head to https://developers.facebook.com and login using your FB account.
+Create a new app called 'chatCAT' and then place generated AppID and App secret like this in 
+
+chatcat/app/config/development.json
+    "fb": {
+        "clientID": "148786205803792",
+        "clientSecret": "8033c42f591391d3b643f59a8116a822",
+        "callbackURL": "//localhost:3000/auth/facebook/callback", <--- Protocol independent http/https.
+        "profileFields": ["id", "displayName", "photos"]
+    }
+
+In facebook developer page for the 'chatCat' app click 'Add Platform' and put this for 'Site URL' --> http://localhost:3000
+
+Next, fill in 'Valid OAuth redirect URIs' with --> http://localhost:3000/auth/facebook/callback
+    1) Go to Dashboard
+    2) At bottom of left column Product Settings -> click +Add Product
+    3) Add facebook Login.
+    4) It will appear in the left column - click it there.
+    5) And You will find Client OAuth Login on the right.
+
+CRITICAL POINT:
+    Before pushing app to Heroku or even git repo set your "clientID" and "clientSecret" to blank strings.
+
+---Social Authentication: Facebook Strategy---
+
+chatcat/app/auth/index.js
+    'use strict';
+    const passport = require('passport');
+    const config = require('../config');
+    const FacebookStrategy = require('passport-facebook').Strategy;
+
+    module.exports = () => {
+
+        let authProcessor = (accessToken, refreshToken, profile, done) => {
+            // Find a user in local mongodb using profile.id.
+            // If user is found return the user data using done().
+            // If user profile is not found, create one in the local db and return.
+        };
+
+        // accessToken & refreshToken are provided by Facebook OAuth 2.0.
+        // For Twitter Oauth 1.0 we are provided token sdn token secret instead.
+        passport.use(new FacebookStrategy(config.fb, authProcessor));
+    }
+
+---Social Authentication Database Helpers---
+
+app/db/index.js
+    // Create a Schema that defines the structure for storing user data.
+    const chatUser = new Mongoose.Schema({
+        profiledId: String,
+        fullName: String,
+        profilePic: String
+    });
+
+    // Turn the schema into a useable model. Mongoose will create plural chatUsers collection on mongolab.
+    let userModel = Mongoose.model('chatUser', chatUser);
+
+    module.exports = {
+        Mongoose,
+        userModel
+
+3:15
