@@ -548,4 +548,60 @@ app/db/index.js
         Mongoose,
         userModel
 
-3:15
+To extact profile.id from our DB
+
+app/helpers/index.js
+    const db = require('../db');
+
+    // Find a single user based on a key
+    let findOne = profileID => {
+        return db.userModel.findOne({
+            'profileId': profileID
+    });
+
+    // Create a new user and returns that instance. Use ES6 promis this time around.
+    let createNewUser = profile => {
+        return new Promise ((resolve, reject) => {
+            let newchatUser = new db.userModel({
+                profileId: profile.id,
+                fullName: profile.displayName,
+                profilePic: profile.photos.value || ''
+            });
+
+            newChatUser.save(error => {
+                if (error) {
+                    reject(error);
+                } else {
+                    resolve(newChatUser);
+                }
+            });
+        });
+    }
+
+module.exports = {
+    route,
+    findOne,
+    createNewUser
+};
+
+app/auth/index.js
+    const h = require('../helpers');
+
+    let authProcessor = (accessToken, refreshToken, profile, done) => {
+        // Find a user in local mongodb using profile.id.
+        // If user is found return the user data using done().
+        // If user profile is not found, create one in the local db and return.
+        h.findOne(profile.id).then(result => {
+            if (result) {
+                // null posiito is where error is held if you want to check 
+                // for server errors place null in most cases
+                // done() returns result
+                done(null, result);
+            } else {
+                // Create new user and return
+                h.createNewUser(profile)
+                    .then(newChatUser => done(null, newChatUser))
+                    .catch(error => console.log('Error when creating new user.'));
+            } 
+        })
+    };
