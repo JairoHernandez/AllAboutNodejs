@@ -6,6 +6,19 @@ const h = require('../helpers');
 
 module.exports = () => {
 
+    // Invoked when Authorization process ends.
+    // done method creates session and stores user.id in session.
+    passport.seriazlizeUser((user, done) => {
+        // This is NOT the profile or userid returned by Facebook.
+        // It's $oid the unique documentID in the mongoDB.
+        // Since sessions use cookies we dont want to store all just user.id.
+        done(null, user.id); 
+    });
+
+    passport.deserializeUser((id, done) {
+        
+    });
+
     let authProcessor = (accessToken, refreshToken, profile, done) => {
         // Find a user in local mongodb using profile.id.
         // If user is found return the user data using done().
